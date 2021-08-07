@@ -131,57 +131,45 @@ var decodeString = function(s) {
 }
 
 var splitString = function (s) {
-    let str = ""
+    let str = "";
+    let tempStr = "";
     let charStack = [];
     let count = 0;
-    let i = 0;
-
-    if (!s.includes("[")) {
-        while (i < s.length) {
-         str += s[i]
-         i++
-        }
-        charStack.push(str);
-        return charStack
-    }
-    else {
-        if (isNaN(s[0])) {
-        while (isNaN(s[i]) && i < s.length) {
-            str += s[i];
-            i++;
-        }
-        charStack.push(str);
-        str = "";
-        }
-        while (i < s.length) {
-            str += s[i];
-            i++;
-            if (s[i] === "[") {
-                count++;
+    for (let i = 0; i < s.length; i++) {
+        if (isNaN(s[i]) && s[i] !== "[" && s[i] !== "]") {
+            str += s[i]; 
+            if (i === s.length - 1) {
+                charStack.push(str)
             }
-            if (s[i] === "]") {
-                count--;
-                if (count === 0) {
-                    str += s[i]
-                    charStack.push(str);
-                    str = "";
-                    i++;
-                }
-            }    
-        }
-        if (str.length !== 0 && s[s.length] !== "]") {
-            charStack.push(str);
+        } else if (!isNaN(s[i])) {
+            if (str.length !== 0 & count === 0) {
+                charStack.push(str);
+                str = "";
+            }
+            tempStr += s[i];
+        } else if (s[i] === "[") {
+            str = str + tempStr + s[i];
+            tempStr = ""
+            count++; 
+        } else if (s[i] === "]") {
+            count--;
+            if(count === 0) { 
+                str += s[i]; 
+                charStack.push(str);
+                str = "";
+            } else {
+                str += s[i]
+            }
         }
     }
     return charStack;
 }
 
-
 // console.log(decodeString("abc"))
-console.log(decodeString("3[z]2[2[y]pq4[2[jk]e1[f]]]ef"))
-// console.log(splitString("3[z]2[2[y]pq4[2[jk]e1[f]]]ef"))
+console.log(decodeString("ab310[z]2[y]pq4[2[jk]e1[f]]ef"))
+// console.log(splitString("2[y]pq4[2[jk]e1[f]]"))
 // console.log(decodeString("abc3[lee2[ab]leeleeleeleeleeleeleelee]")) 
-// console.log(decodeString("abc31[a2[c]]3[ac]cd")) 
+// console.log(splitString("abc31[a2[c]]3[ac]cd")) 
 // console.log(decodeString("2[abc]3[cd]ef")) 
 // console.log(decodeString("abc3[cd]xyz")) 
 // console.log("abc")
